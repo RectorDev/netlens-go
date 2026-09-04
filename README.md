@@ -147,3 +147,11 @@ The ALT ports prevent NetLens's own upstream connections from being intercepted 
 ## Safety / privacy
 
 Use NetLens only on systems and traffic you own or are authorized to inspect. Captured requests can contain cookies, bearer tokens, API keys, passwords, and personal data. The UI/API binds to localhost by default, and captured flows remain in memory until they are cleared, evicted, the app exits, or you explicitly export them.
+
+## License
+
+NetLens is licensed under the GNU General Public License v3.0.
+
+You are free to use, modify, and redistribute this software under the terms of the GPL v3.
+
+See the [LICENSE](LICENSE) file for the full license text.
