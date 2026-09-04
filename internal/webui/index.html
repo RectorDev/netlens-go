@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NetLens</title>
+<style>
+:root{
+  color-scheme:dark;--bg:#080b10;--panel:#0d1219;--panel2:#111821;--line:#202938;--line2:#2b3749;
+  --text:#e9eef6;--muted:#8f9caf;--accent:#6da8ff;--good:#6fe3a4;--warn:#f4c86a;--bad:#ff7e89;
+  --shadow:0 16px 44px rgba(0,0,0,.32);font-family:Inter,"Segoe UI",system-ui,sans-serif
+}
+:root.light{color-scheme:light;--bg:#f5f7fb;--panel:#fff;--panel2:#f8fafc;--line:#dfe5ee;--line2:#ccd5e2;--text:#172033;--muted:#657187;--accent:#246fe5;--good:#16895a;--warn:#a16b05;--bad:#c93c4b;--shadow:0 16px 44px rgba(36,48,72,.12)}
+*{box-sizing:border-box}html,body{margin:0;height:100%;background:var(--bg);color:var(--text);overflow:hidden}button,input,select{font:inherit}
+button{cursor:pointer}.app{height:100vh;display:grid;grid-template-rows:58px auto auto 1fr 27px}.topbar{display:flex;align-items:center;gap:12px;padding:0 14px;border-bottom:1px solid var(--line);background:var(--panel)}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:-.02em}.logo{width:31px;height:31px;border-radius:9px;display:grid;place-items:center;background:linear-gradient(145deg,#558dff,#765cff);color:white;box-shadow:0 6px 22px rgba(85,141,255,.3)}
+.badge{border:1px solid var(--line2);border-radius:999px;padding:5px 8px;font-size:11px;color:var(--muted);display:flex;align-items:center;gap:6px}.dot{width:7px;height:7px;border-radius:50%;background:var(--good);box-shadow:0 0 0 4px color-mix(in srgb,var(--good),transparent 84%)}.badge.paused .dot{background:var(--warn);box-shadow:none}.spacer{flex:1}.btn{border:1px solid var(--line2);background:var(--panel2);color:var(--text);border-radius:8px;padding:7px 10px;font-size:12px}.btn:hover{border-color:#4a5c76}.btn.primary{background:var(--accent);color:white;border-color:transparent}.btn.danger{color:var(--bad)}.btn.breakon{color:var(--warn);border-color:color-mix(in srgb,var(--warn),transparent 35%);background:color-mix(in srgb,var(--warn),transparent 90%)}.btn.breakpending{color:#fff;background:var(--bad);border-color:transparent}.iconbtn{width:34px;height:34px;padding:0;display:grid;place-items:center}
+.stats{display:grid;grid-template-columns:repeat(5,minmax(130px,1fr));gap:8px;padding:9px 12px 0}.stat{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-height:64px}.stat .label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}.stat .value{font-size:20px;font-weight:750;margin-top:3px}.stat small{font-size:10px;color:var(--muted)}
+.filters{display:flex;align-items:center;gap:7px;padding:9px 12px;border-bottom:1px solid var(--line);min-width:0}.search{position:relative;flex:1;min-width:220px}.search input{width:100%;padding-left:31px}.search:before{content:'⌕';position:absolute;left:10px;top:6px;color:var(--muted);font-size:17px}.control{height:34px;background:var(--panel);color:var(--text);border:1px solid var(--line2);border-radius:8px;padding:0 9px;font-size:12px;outline:none}.control:focus{border-color:var(--accent);box-shadow:0 0 0 2px color-mix(in srgb,var(--accent),transparent 80%)}select.control{max-width:145px}.filter-more{position:relative}.chip{display:inline-flex;align-items:center;gap:5px}
+.workspace{display:grid;grid-template-columns:minmax(620px,56%) minmax(390px,44%);min-height:0}.tablepane{min-width:0;overflow:auto;border-right:1px solid var(--line);background:var(--panel)}.detailpane{min-width:0;overflow:auto;background:var(--bg)}
+table{border-collapse:separate;border-spacing:0;width:100%;font-size:11.5px;table-layout:fixed}thead th{position:sticky;top:0;z-index:2;background:var(--panel2);color:var(--muted);text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--line2);padding:8px 8px;white-space:nowrap;user-select:none}thead th.sortable{cursor:pointer}thead th.sortable:hover{color:var(--text)}tbody td{padding:7px 8px;border-bottom:1px solid var(--line);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;height:34px}tbody tr{cursor:pointer}tbody tr:hover{background:color-mix(in srgb,var(--accent),transparent 94%)}tbody tr.selected{background:color-mix(in srgb,var(--accent),transparent 88%);box-shadow:inset 2px 0 var(--accent)}
+.method{font-weight:800}.mGET{color:#77b7ff}.mPOST{color:#7be3ad}.mPUT,.mPATCH{color:#f0ca6d}.mDELETE{color:#ff8893}.status{font-variant-numeric:tabular-nums;font-weight:700}.s2{color:var(--good)}.s3{color:#83cfff}.s4,.s5,.serr{color:var(--bad)}.muted{color:var(--muted)}.mono{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}.host{font-weight:600}.process{display:flex;align-items:center;gap:6px}.processmark{width:7px;height:7px;border-radius:2px;background:var(--accent);flex:none}.empty{display:grid;place-items:center;min-height:220px;color:var(--muted);padding:30px;text-align:center}
+.detailhead{position:sticky;top:0;z-index:3;background:color-mix(in srgb,var(--bg),transparent 5%);backdrop-filter:blur(14px);padding:14px 16px 0;border-bottom:1px solid var(--line)}.titleline{display:flex;align-items:center;gap:8px}.titleline h2{font-size:16px;margin:0;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.detailactions{display:flex;gap:6px;margin-left:auto}.tabs{display:flex;gap:16px;margin-top:12px}.tab{border:0;background:none;color:var(--muted);padding:0 0 9px;border-bottom:2px solid transparent;font-size:12px}.tab.active{color:var(--text);border-color:var(--accent)}.detailbody{padding:14px 16px 30px}.kv{display:grid;grid-template-columns:130px minmax(0,1fr);gap:7px 12px;font-size:12px}.kv b{color:var(--muted);font-weight:600}.kv span{word-break:break-word}.section{margin-top:16px}.sectiontitle{display:flex;align-items:center;gap:8px;margin:0 0 7px;font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}.code{background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:11px;white-space:pre-wrap;word-break:break-word;font:11px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;max-height:320px;overflow:auto}.errorbox{border-color:color-mix(in srgb,var(--bad),transparent 55%);color:var(--bad)}
+.headers{width:100%;table-layout:auto;font-size:11px}.headers td{white-space:normal;vertical-align:top;height:auto}.headers td:first-child{color:var(--muted);width:170px}.headers td:last-child{word-break:break-word;font-family:ui-monospace,SFMono-Regular,Consolas,monospace}
+.statusbar{display:flex;align-items:center;gap:12px;padding:0 12px;background:var(--panel2);border-top:1px solid var(--line);font-size:10px;color:var(--muted)}.statusbar .right{margin-left:auto}
+.modalback{display:none;position:fixed;inset:0;z-index:20;background:rgba(0,0,0,.56);align-items:center;justify-content:center;padding:20px}.modalback.open{display:flex}.modal{width:min(690px,95vw);max-height:86vh;overflow:auto;background:var(--panel);border:1px solid var(--line2);border-radius:14px;box-shadow:var(--shadow)}.modalhead{display:flex;align-items:center;padding:15px 17px;border-bottom:1px solid var(--line)}.modalhead h3{margin:0;font-size:15px}.modalbody{padding:16px 17px}.modalfooter{display:flex;justify-content:flex-end;gap:8px;padding:12px 17px;border-top:1px solid var(--line)}.settingrow{display:grid;grid-template-columns:1fr auto;gap:18px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}.settingrow:last-child{border-bottom:0}.settingrow h4{margin:0 0 3px;font-size:12px}.settingrow p{margin:0;color:var(--muted);font-size:11px;line-height:1.45}.warning{background:color-mix(in srgb,var(--warn),transparent 90%);border:1px solid color-mix(in srgb,var(--warn),transparent 65%);padding:10px;border-radius:9px;font-size:11px;color:var(--warn);margin-bottom:12px}.columnsgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.check{display:flex;gap:7px;align-items:center;font-size:11px;padding:8px;background:var(--panel2);border:1px solid var(--line);border-radius:8px}.toast{position:fixed;right:18px;bottom:42px;z-index:50;background:var(--panel);border:1px solid var(--line2);box-shadow:var(--shadow);border-radius:9px;padding:10px 12px;font-size:11px;opacity:0;transform:translateY(7px);pointer-events:none;transition:.18s}.toast.show{opacity:1;transform:none}.dropdown{position:absolute;right:0;top:40px;z-index:10;width:210px;background:var(--panel);border:1px solid var(--line2);border-radius:10px;box-shadow:var(--shadow);padding:6px;display:none}.dropdown.open{display:block}.dropdown button{width:100%;text-align:left;border:0;background:transparent;color:var(--text);padding:8px;border-radius:7px;font-size:11px}.dropdown button:hover{background:var(--panel2)}.sep{height:1px;background:var(--line);margin:5px}.pill{font-size:10px;border-radius:999px;padding:2px 6px;border:1px solid var(--line2);color:var(--muted)}.pendinglist{display:grid;gap:10px}.pendingcard{border:1px solid var(--line2);background:var(--panel2);border-radius:10px;padding:11px}.pendingtop{display:flex;align-items:center;gap:8px;min-width:0}.pendingurl{font:11px/1.4 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--muted)}.pendingmeta{display:flex;gap:10px;flex-wrap:wrap;margin-top:7px;font-size:10px;color:var(--muted)}.pendingactions{display:flex;gap:6px;margin-left:auto;flex:none}.pendingcard details{margin-top:9px;border-top:1px solid var(--line);padding-top:8px}.pendingcard summary{cursor:pointer;color:var(--muted);font-size:11px}.pendingbody{max-height:150px;margin-top:7px}.interceptempty{padding:28px 8px;text-align:center;color:var(--muted);font-size:12px}.pulse{animation:pulse 1.2s ease-in-out infinite}@keyframes pulse{50%{box-shadow:0 0 0 5px color-mix(in srgb,var(--bad),transparent 78%)}}
+@media(max-width:1050px){.stats{grid-template-columns:repeat(3,1fr)}.stats .stat:nth-child(4),.stats .stat:nth-child(5){display:none}.workspace{grid-template-columns:1fr}.detailpane{position:absolute;right:0;top:148px;bottom:27px;width:min(620px,92vw);box-shadow:-18px 0 50px rgba(0,0,0,.35);border-left:1px solid var(--line);display:none}.detailpane.open{display:block}.tablepane{border-right:0}.filters select:nth-of-type(n+4){display:none}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="brand"><div class="logo">N</div><span>NetLens</span></div>
+    <div id="captureBadge" class="badge"><span class="dot"></span><span id="captureText">CAPTURING</span></div>
+    <div id="caBadge" class="badge">TLS CA: checking…</div>
+    <div class="spacer"></div>
+    <button id="pauseBtn" class="btn" onclick="toggleRecording()">Pause</button>
+    <button id="httpsPauseBtn" class="btn" onclick="httpsPauseButton()" title="Pause HTTPS requests before sending them upstream">HTTPS Break: Off</button>
+    <div class="filter-more">
+      <button class="btn" onclick="toggleExport(event)">Export ▾</button>
+      <div id="exportMenu" class="dropdown">
+        <button onclick="exportData('csv')">CSV table</button>
+        <button onclick="exportData('json')">JSON capture</button>
+        <button onclick="exportData('har')">HAR archive</button>
+        <div class="sep"></div>
+        <button onclick="exportData('pdf')"><b>PDF report</b></button>
+      </div>
+    </div>
+    <button class="btn iconbtn" title="Columns" onclick="openColumns()">▦</button>
+    <button class="btn iconbtn" title="Settings" onclick="openSettings()">⚙</button>
+    <button class="btn danger" onclick="clearFlows()">Clear</button>
+  </header>
+
+  <section class="stats">
+    <div class="stat"><div class="label">Visible requests</div><div id="stCount" class="value">0</div><small id="stRate">live capture</small></div>
+    <div class="stat"><div class="label">Errors</div><div id="stErrors" class="value">0</div><small id="stErrorRate">0%</small></div>
+    <div class="stat"><div class="label">Avg latency</div><div id="stLatency" class="value">0 ms</div><small id="stSlow">slowest 0 ms</small></div>
+    <div class="stat"><div class="label">Response data</div><div id="stBytes" class="value">0 B</div><small id="stReqBytes">request 0 B</small></div>
+    <div class="stat"><div class="label">Unique</div><div id="stUnique" class="value">0</div><small id="stUniqueSub">0 processes</small></div>
+  </section>
+
+  <section class="filters">
+    <div class="search"><input id="q" class="control" placeholder="Search URL, host, process, status, error…"></div>
+    <select id="method" class="control"><option value="">All methods</option><option>GET</option><option>POST</option><option>PUT</option><option>PATCH</option><option>DELETE</option><option>OPTIONS</option><option>HEAD</option></select>
+    <select id="status" class="control"><option value="">All statuses</option><option value="success">2xx Success</option><option value="redirect">3xx Redirect</option><option value="client-error">4xx Client error</option><option value="server-error">5xx Server error</option><option value="error">Errors only</option></select>
+    <select id="scheme" class="control"><option value="">HTTP + HTTPS</option><option value="https">HTTPS</option><option value="http">HTTP</option></select>
+    <select id="process" class="control"><option value="">All processes</option></select>
+    <select id="host" class="control"><option value="">All hosts</option></select>
+    <select id="range" class="control"><option value="all">All time</option><option value="15m">Last 15 min</option><option value="1h">Last hour</option></select>
+    <input id="minDuration" class="control" type="number" min="0" step="50" style="width:91px" placeholder="Min ms">
+    <button id="tlsFilter" class="btn" data-active="0" onclick="toggleTLS()">TLS only</button>
+    <button class="btn" onclick="resetFilters()">Reset</button>
+  </section>
+
+  <main class="workspace">
+    <section class="tablepane">
+      <table id="flowsTable">
+        <colgroup id="colgroup"></colgroup>
+        <thead><tr id="thead"></tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+      <div id="empty" class="empty" style="display:none"><div><b>No matching requests</b><br><span>Try changing filters or generate some network traffic.</span></div></div>
+    </section>
+    <aside id="detailPane" class="detailpane"><div class="empty">Select a request to inspect headers, bodies, TLS details, process information and developer tools.</div></aside>
+  </main>
+
+  <footer class="statusbar"><span id="footCapture">Ready</span><span id="footRows">0 rows</span><span id="footIntercept">HTTPS breakpoints off</span><span id="footMemory">in-memory only</span><span class="right">/ search · ↑↓ navigate · Esc close</span></footer>
+</div>
+
+<div id="settingsBack" class="modalback" onclick="backdropClose(event,'settingsBack')"><div class="modal">
+  <div class="modalhead"><h3>NetLens Settings</h3><div class="spacer"></div><button class="btn iconbtn" onclick="closeModal('settingsBack')">×</button></div>
+  <div class="modalbody">
+    <div class="warning">Installing the NetLens CA allows this local app to inspect HTTPS traffic on your computer. Use it only on systems and traffic you own or are authorized to inspect. Remove it when you no longer need HTTPS inspection.</div>
+    <div class="settingrow"><div><h4>HTTPS interception certificate</h4><p id="certDescription">Checking certificate store…</p></div><div style="display:flex;gap:6px"><button id="certAction" class="btn primary" onclick="toggleCert()">Install CA</button><button class="btn" onclick="location.href='/api/cert/download'">Download .cer</button></div></div>
+    <div class="settingrow"><div><h4>HTTPS request breakpoints</h4><p>When enabled, decrypted HTTPS requests wait before reaching the destination. Continue or drop each request from the breakpoint queue.</p></div><button id="httpsPauseSettingsBtn" class="btn" onclick="toggleHTTPSPause()">Enable</button></div>
+    <div class="settingrow"><div><h4>Theme</h4><p>Switch the inspector between dark and light themes.</p></div><button class="btn" onclick="toggleTheme()">Toggle theme</button></div>
+    <div class="settingrow"><div><h4>Privacy</h4><p>Captured traffic is held in memory only. Export files are created only when you click an export action.</p></div><span class="pill">LOCAL</span></div>
+    <div class="settingrow"><div><h4>Capture capacity</h4><p id="capacityText">Up to 5,000 requests are retained in memory before the oldest are dropped.</p></div><span class="pill" id="capacityPill">5000</span></div>
+  </div>
+  <div class="modalfooter"><button class="btn" onclick="closeModal('settingsBack')">Close</button></div>
+</div></div>
+
+<div id="interceptBack" class="modalback" onclick="backdropClose(event,'interceptBack')"><div class="modal" style="width:min(820px,96vw)">
+  <div class="modalhead"><h3>Paused HTTPS requests</h3><span id="pendingCountPill" class="pill" style="margin-left:8px">0 pending</span><div class="spacer"></div><button class="btn iconbtn" onclick="closeModal('interceptBack')">×</button></div>
+  <div class="modalbody">
+    <div class="warning">Requests shown here have not been sent to the remote server yet. Continue sends the original request unchanged; Drop returns a local 403 response. Turning HTTPS Break off automatically continues all waiting requests.</div>
+    <div id="pendingList" class="pendinglist"><div class="interceptempty">No HTTPS requests are waiting.</div></div>
+  </div>
+  <div class="modalfooter"><button id="continueAllBtn" class="btn" onclick="continueAllHTTPS()">Continue all</button><button class="btn" onclick="closeModal('interceptBack')">Close</button></div>
+</div></div>
+
+<div id="columnsBack" class="modalback" onclick="backdropClose(event,'columnsBack')"><div class="modal" style="width:min(560px,95vw)">
+  <div class="modalhead"><h3>Table columns</h3><div class="spacer"></div><button class="btn iconbtn" onclick="closeModal('columnsBack')">×</button></div>
+  <div class="modalbody"><div id="columnsGrid" class="columnsgrid"></div></div>
+  <div class="modalfooter"><button class="btn" onclick="resetColumns()">Default</button><button class="btn primary" onclick="closeModal('columnsBack')">Done</button></div>
+</div></div>
+<div id="toast" class="toast"></div>
+
+<script>
+const columnDefs=[
+  {id:'time',label:'Time',w:78,sort:'time',value:f=>new Date(f.startedAt).toLocaleTimeString([], {hour12:false})},
+  {id:'method',label:'Method',w:65,sort:'method',value:f=>f.method||f.protocol||'—'},
+  {id:'status',label:'Status',w:62,sort:'status',value:f=>f.status||'ERR'},
+  {id:'host',label:'Host',w:180,sort:'host',value:f=>f.host||f.serverIp||'—'},
+  {id:'path',label:'Path / URL',w:290,value:f=>displayPath(f.url)},
+  {id:'process',label:'Process',w:140,sort:'process',value:f=>f.processName||('PID '+(f.processId||'?'))},
+  {id:'duration',label:'Time',w:82,sort:'duration',value:f=>(f.durationMs||0)+' ms'},
+  {id:'request',label:'Req',w:74,sort:'request-bytes',value:f=>bytes(f.request?.bytes||0)},
+  {id:'response',label:'Res',w:74,sort:'response-bytes',value:f=>bytes(f.response?.bytes||0)},
+  {id:'tls',label:'TLS',w:76,value:f=>f.tls?(f.tlsVersion||'TLS'):'—'}
+];
+const defaults=['time','method','status','host','path','process','duration','response','tls'];
+let flows=[],visible=[],selected=null,selectedFlow=null,activeTab='overview',sortField='time',sortDir='desc',recording=true,caInstalled=false,httpsPauseEnabled=false,pausedHTTPS=[],lastPendingCount=0,lastCount=0,lastTick=Date.now();
+let visibleCols=JSON.parse(localStorage.getItem('netlens.columns')||'null')||defaults.slice();
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const apiPost=(url,body)=>fetch(url,{method:'POST',headers:{'Content-Type':'application/json','X-NetLens-UI':'1'},body:body===undefined?'{}':JSON.stringify(body)});
+function bytes(n){n=Number(n)||0;if(n<1024)return n+' B';if(n<1048576)return (n/1024).toFixed(n<10240?1:0)+' KB';return (n/1048576).toFixed(1)+' MB'}
+function displayPath(u){try{let x=new URL(u);return (x.pathname||'/')+(x.search||'')}catch{return u||'—'}}
+function statusClass(f){if(f.error||!f.status)return'serr';return 's'+Math.floor(f.status/100)}
+function methodClass(m){return 'm'+String(m||'').toUpperCase()}
+function toast(msg){$('toast').textContent=msg;$('toast').classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>$('toast').classList.remove('show'),2200)}
+function options(id,items,label){const el=$(id),old=el.value;el.innerHTML=`<option value="">${label}</option>`+[...items].sort((a,b)=>a.localeCompare(b)).map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join('');if([...items].includes(old))el.value=old}
+async function load(){
+  try{
+    const [fr,sr,pr]=await Promise.all([fetch('/api/flows?limit=5000'),fetch('/api/status'),fetch('/api/intercept/pending')]);
+    if(fr.ok){flows=await fr.json();refreshFilterOptions();applyFilters()}
+    if(sr.ok)updateStatus(await sr.json());
+    if(pr.ok)updatePendingHTTPS(await pr.json());
+  }catch(e){$('footCapture').textContent='UI disconnected'}
+  setTimeout(load,700)
+}
+function refreshFilterOptions(){options('host',new Set(flows.map(f=>f.host).filter(Boolean)),'All hosts');options('process',new Set(flows.map(f=>f.processName).filter(Boolean)),'All processes')}
+function filterState(){return{q:$('q').value.trim().toLowerCase(),method:$('method').value,status:$('status').value,scheme:$('scheme').value,process:$('process').value.toLowerCase(),host:$('host').value.toLowerCase(),range:$('range').value,min:Number($('minDuration').value)||0,tls:$('tlsFilter').dataset.active==='1'}}
+function matches(f,s){
+  if(s.q&&!JSON.stringify([f.host,f.url,f.processName,f.processPath,f.method,f.status,f.serverIp,f.error]).toLowerCase().includes(s.q))return false;
+  if(s.method&&f.method!==s.method)return false;if(s.scheme&&f.scheme!==s.scheme)return false;if(s.process&&String(f.processName||'').toLowerCase()!==s.process)return false;if(s.host&&String(f.host||'').toLowerCase()!==s.host)return false;if(s.tls&&!f.tls)return false;if((f.durationMs||0)<s.min)return false;
+  if(s.range!=='all'){const age=Date.now()-new Date(f.startedAt).getTime(),max=s.range==='15m'?900000:3600000;if(age>max)return false}
+  if(s.status==='success'&&!(f.status>=200&&f.status<300))return false;if(s.status==='redirect'&&!(f.status>=300&&f.status<400))return false;if(s.status==='client-error'&&!(f.status>=400&&f.status<500))return false;if(s.status==='server-error'&&!(f.status>=500&&f.status<600))return false;if(s.status==='error'&&!(f.error||f.status>=400||!f.status))return false;
+  return true
+}
+function applyFilters(){const s=filterState();visible=flows.filter(f=>matches(f,s));sortVisible();renderTable();renderStats();$('footRows').textContent=`${visible.length} visible / ${flows.length} captured`;if(selected&&!flows.some(f=>f.id===selected)){selected=null;selectedFlow=null;renderEmptyDetail()}}
+function sortVisible(){const key={time:f=>new Date(f.startedAt).getTime(),method:f=>f.method||'',status:f=>f.status||0,host:f=>f.host||'',process:f=>f.processName||'',duration:f=>f.durationMs||0,'request-bytes':f=>f.request?.bytes||0,'response-bytes':f=>f.response?.bytes||0}[sortField]||(()=>0);visible.sort((a,b)=>{let A=key(a),B=key(b);let n=typeof A==='string'?A.localeCompare(B):A-B;return sortDir==='asc'?n:-n})}
+function renderColumns(){
+  $('colgroup').innerHTML=visibleCols.map(id=>{let c=columnDefs.find(x=>x.id===id);return `<col style="width:${c.w}px">`}).join('');
+  $('thead').innerHTML=visibleCols.map(id=>{let c=columnDefs.find(x=>x.id===id),arrow=c.sort&&sortField===c.sort?(sortDir==='asc'?' ↑':' ↓'):'';return `<th class="${c.sort?'sortable':''}" ${c.sort?`onclick="setSort('${c.sort}')"`:''}>${esc(c.label)}${arrow}</th>`}).join('');
+}
+function cellHTML(id,f){const c=columnDefs.find(x=>x.id===id),v=c.value(f);if(id==='method')return `<td class="method ${methodClass(f.method)}">${esc(v)}</td>`;if(id==='status')return `<td class="status ${statusClass(f)}">${esc(v)}</td>`;if(id==='host')return `<td class="host" title="${esc(f.host||'')}">${esc(v)}</td>`;if(id==='path')return `<td class="mono muted" title="${esc(f.url||'')}">${esc(v)}</td>`;if(id==='process')return `<td title="${esc(f.processPath||'')}"><div class="process"><i class="processmark"></i>${esc(v)}</div></td>`;if(['duration','request','response','time','tls'].includes(id))return `<td class="muted mono">${esc(v)}</td>`;return `<td>${esc(v)}</td>`}
+function renderTable(){renderColumns();$('tbody').innerHTML=visible.map(f=>`<tr data-id="${f.id}" class="${selected===f.id?'selected':''}" onclick="selectFlow(${f.id})">${visibleCols.map(id=>cellHTML(id,f)).join('')}</tr>`).join('');$('empty').style.display=visible.length?'none':'grid'}
+function setSort(field){if(sortField===field)sortDir=sortDir==='asc'?'desc':'asc';else{sortField=field;sortDir='asc'}applyFilters()}
+function renderStats(){let errs=0,req=0,res=0,dur=0,slow=0,hosts=new Set(),procs=new Set();for(const f of visible){if(f.error||f.status>=400||!f.status)errs++;req+=f.request?.bytes||0;res+=f.response?.bytes||0;dur+=f.durationMs||0;slow=Math.max(slow,f.durationMs||0);if(f.host)hosts.add(f.host);if(f.processName)procs.add(f.processName)}$('stCount').textContent=visible.length;$('stErrors').textContent=errs;$('stErrorRate').textContent=(visible.length?Math.round(errs/visible.length*100):0)+'%';$('stLatency').textContent=(visible.length?Math.round(dur/visible.length):0)+' ms';$('stSlow').textContent='slowest '+slow+' ms';$('stBytes').textContent=bytes(res);$('stReqBytes').textContent='request '+bytes(req);$('stUnique').textContent=hosts.size;$('stUniqueSub').textContent=procs.size+' processes';let now=Date.now(),dt=(now-lastTick)/1000;if(dt>.5){let d=Math.max(0,flows.length-lastCount);$('stRate').textContent=d?`${(d/dt).toFixed(1)} req/s`:(recording?'live capture':'paused');lastCount=flows.length;lastTick=now}}
+async function selectFlow(id){selected=id;renderTable();try{const r=await fetch('/api/flows/'+id);if(!r.ok)return;selectedFlow=await r.json();renderDetail()}catch{} }
+function renderEmptyDetail(){ $('detailPane').classList.remove('open');$('detailPane').innerHTML='<div class="empty">Select a request to inspect headers, bodies, TLS details, process information and developer tools.</div>' }
+function headerTable(h){let rows=[];for(const[k,vals]of Object.entries(h||{}))for(const v of vals)rows.push(`<tr><td>${esc(k)}</td><td>${esc(v)}</td></tr>`);return rows.length?`<table class="headers">${rows.join('')}</table>`:'<div class="muted">No headers</div>'}
+function prettyBody(body,headers){if(!body)return'(empty)';const ct=Object.entries(headers||{}).find(([k])=>k.toLowerCase()==='content-type')?.[1]?.[0]||'';if(ct.includes('json')||String(body).trim().match(/^[\[{]/)){try{return JSON.stringify(JSON.parse(body),null,2)}catch{}}return body}
+function tabButton(id,label){return `<button class="tab ${activeTab===id?'active':''}" onclick="switchTab('${id}')">${label}</button>`}
+function renderDetail(){const f=selectedFlow;if(!f)return renderEmptyDetail();$('detailPane').classList.add('open');let body='';
+  if(activeTab==='overview')body=`<div class="kv"><b>Full URL</b><span class="mono">${esc(f.url||'—')}</span><b>Process</b><span>${esc(f.processName||'unknown')} ${f.processId?'(PID '+f.processId+')':''}</span><b>Executable</b><span class="mono">${esc(f.processPath||'—')}</span><b>Server</b><span class="mono">${esc(f.serverIp||'—')}:${f.tls?443:80}</span><b>Status</b><span class="status ${statusClass(f)}">${f.status||'ERROR'}</span><b>Protocol</b><span>${esc(f.protocol||'—')}</span><b>Duration</b><span>${f.durationMs||0} ms</span><b>Started</b><span>${new Date(f.startedAt).toLocaleString()}</span><b>Transfer</b><span>${bytes((f.request?.bytes||0)+(f.response?.bytes||0))}</span></div>${f.error?`<div class="section"><div class="sectiontitle">Error</div><div class="code errorbox">${esc(f.error)}</div></div>`:''}`;
+  if(activeTab==='request')body=`<div class="section"><div class="sectiontitle">Request headers <span class="pill">${Object.keys(f.request?.headers||{}).length}</span></div>${headerTable(f.request?.headers)}</div><div class="section"><div class="sectiontitle">Request body <span class="pill">${bytes(f.request?.bytes||0)}</span></div><div class="code">${esc(prettyBody(f.request?.body,f.request?.headers))}</div></div>`;
+  if(activeTab==='response')body=`<div class="section"><div class="sectiontitle">Response headers <span class="pill">${Object.keys(f.response?.headers||{}).length}</span></div>${headerTable(f.response?.headers)}</div><div class="section"><div class="sectiontitle">Response body <span class="pill">${bytes(f.response?.bytes||0)}</span></div><div class="code">${esc(prettyBody(f.response?.body,f.response?.headers))}</div></div>`;
+  if(activeTab==='security')body=`<div class="kv"><b>HTTPS intercepted</b><span>${f.tls?'Yes':'No'}</span><b>TLS version</b><span>${esc(f.tlsVersion||'—')}</span><b>Cipher suite</b><span class="mono">${esc(f.cipherSuite||'—')}</span><b>Host</b><span>${esc(f.host||'—')}</span><b>Server IP</b><span>${esc(f.serverIp||'—')}</span></div><div class="section"><div class="sectiontitle">Security note</div><div class="code">NetLens decrypts HTTPS locally only when its root CA is trusted. Certificate-pinned applications may reject interception. Captured headers and bodies can contain credentials and personal data.</div></div>`;
+  if(activeTab==='tools')body=`<div class="section"><div class="sectiontitle">cURL</div><div id="curlBox" class="code">${esc(toCurl(f))}</div></div><div style="display:flex;gap:7px;flex-wrap:wrap"><button class="btn" onclick="copyText(toCurl(selectedFlow),'cURL copied')">Copy cURL</button><button class="btn" onclick="copyText(selectedFlow.url,'URL copied')">Copy URL</button><button class="btn" onclick="copyText(JSON.stringify(selectedFlow,null,2),'Flow JSON copied')">Copy JSON</button></div>`;
+  $('detailPane').innerHTML=`<div class="detailhead"><div class="titleline"><span class="method ${methodClass(f.method)}">${esc(f.method||f.protocol)}</span><h2 title="${esc(f.url||'')}">${esc(f.host||f.serverIp||'Request')}</h2><div class="detailactions"><button class="btn" onclick="copyText(selectedFlow.url,'URL copied')">Copy URL</button><button class="btn iconbtn" onclick="selected=null;selectedFlow=null;renderTable();renderEmptyDetail()">×</button></div></div><div class="tabs">${tabButton('overview','Overview')}${tabButton('request','Request')}${tabButton('response','Response')}${tabButton('security','Security')}${tabButton('tools','Tools')}</div></div><div class="detailbody">${body}</div>`}
+function switchTab(t){activeTab=t;renderDetail()}
+function toCurl(f){if(!f)return'';let parts=['curl.exe','-X',shellQuote(f.method||'GET')];for(const[k,vals]of Object.entries(f.request?.headers||{})){if(['content-length','host'].includes(k.toLowerCase()))continue;for(const v of vals)parts.push('-H',shellQuote(k+': '+v))}if(f.request?.body)parts.push('--data-raw',shellQuote(f.request.body));parts.push(shellQuote(f.url||''));return parts.join(' ')}
+function shellQuote(s){return "'"+String(s).replaceAll("'","''")+"'"}
+async function copyText(s,msg){try{await navigator.clipboard.writeText(String(s||''));toast(msg)}catch{toast('Clipboard unavailable')}}
+function toggleTLS(){let b=$('tlsFilter');b.dataset.active=b.dataset.active==='1'?'0':'1';b.classList.toggle('primary',b.dataset.active==='1');applyFilters()}
+function resetFilters(){$('q').value='';$('method').value='';$('status').value='';$('scheme').value='';$('process').value='';$('host').value='';$('range').value='all';$('minDuration').value='';$('tlsFilter').dataset.active='0';$('tlsFilter').classList.remove('primary');applyFilters()}
+function buildQuery(){let s=filterState(),p=new URLSearchParams;if(s.q)p.set('q',s.q);if(s.method)p.set('method',s.method);if(s.status)p.set('status',s.status);if(s.scheme)p.set('scheme',s.scheme);if(s.process)p.set('process',$('process').value);if(s.host)p.set('host',$('host').value);if(s.min)p.set('minDuration',s.min);if(s.tls)p.set('tls','true');if(s.range!=='all'){let ms=s.range==='15m'?900000:3600000;p.set('from',new Date(Date.now()-ms).toISOString())}p.set('sort',sortField);p.set('sortDir',sortDir);return p}
+function exportData(format){closeExport();let p=buildQuery();p.set('format',format);location.href='/api/export?'+p.toString();toast(format.toUpperCase()+' export started')}
+function toggleExport(e){e.stopPropagation();$('exportMenu').classList.toggle('open')}function closeExport(){$('exportMenu').classList.remove('open')}
+document.addEventListener('click',closeExport);
+async function toggleRecording(){try{let next=!recording,r=await apiPost('/api/recording',{recording:next});if(!r.ok)throw new Error(await r.text());let x=await r.json();recording=x.recording;updateCaptureUI();toast(recording?'Recording resumed':'Recording paused')}catch(e){toast('Could not change recording state')}}
+function updateCaptureUI(){let b=$('captureBadge');b.classList.toggle('paused',!recording);$('captureText').textContent=recording?'CAPTURING':'PAUSED';$('pauseBtn').textContent=recording?'Pause':'Resume';$('footCapture').textContent=recording?'Capturing HTTP/HTTPS':'Capture recording paused'}
+function updateStatus(s){recording=!!s.capturing;caInstalled=!!s.caInstalled;httpsPauseEnabled=!!s.httpsPauseEnabled;updateCaptureUI();updateHTTPSPauseUI(Number(s.pausedHTTPS||pausedHTTPS.length));$('caBadge').textContent=caInstalled?'TLS CA: trusted':'TLS CA: not trusted';$('caBadge').style.color=caInstalled?'var(--good)':'var(--warn)';$('capacityText').textContent=`Up to ${Number(s.maxFlows||0).toLocaleString()} requests are retained in memory before the oldest are dropped.`;$('capacityPill').textContent=Number(s.maxFlows||0).toLocaleString()}
+function updateHTTPSPauseUI(count=pausedHTTPS.length){const b=$('httpsPauseBtn');b.classList.toggle('breakon',httpsPauseEnabled&&count===0);b.classList.toggle('breakpending',count>0);b.classList.toggle('pulse',count>0);b.textContent=count>0?`HTTPS Break: ${count} waiting`:(httpsPauseEnabled?'HTTPS Break: ON':'HTTPS Break: Off');b.title=count>0?'Open paused HTTPS request queue':'Pause HTTPS requests before they are sent upstream';$('footIntercept').textContent=count>0?`${count} HTTPS request${count===1?'':'s'} waiting`:(httpsPauseEnabled?'HTTPS breakpoints armed':'HTTPS breakpoints off');const sb=$('httpsPauseSettingsBtn');if(sb){sb.textContent=httpsPauseEnabled?'Disable':'Enable';sb.classList.toggle('breakon',httpsPauseEnabled)}const pp=$('pendingCountPill');if(pp)pp.textContent=`${count} pending`;const ca=$('continueAllBtn');if(ca)ca.disabled=count===0}
+function httpsPauseButton(){if(pausedHTTPS.length)openIntercept();else toggleHTTPSPause()}
+async function toggleHTTPSPause(){if(!httpsPauseEnabled&&!caInstalled){toast('Install & trust the NetLens CA before enabling HTTPS breakpoints');openSettings();return}try{const next=!httpsPauseEnabled,r=await apiPost('/api/intercept',{enabled:next});if(!r.ok)throw new Error(await r.text());const x=await r.json();httpsPauseEnabled=!!x.enabled;updateHTTPSPauseUI(Number(x.pending||0));toast(httpsPauseEnabled?'HTTPS breakpoints enabled':'HTTPS breakpoints disabled; waiting requests continued')}catch(e){toast('Could not change HTTPS breakpoint state')}}
+function openIntercept(){renderPendingHTTPS();$('interceptBack').classList.add('open')}
+function updatePendingHTTPS(items){pausedHTTPS=Array.isArray(items)?items:[];updateHTTPSPauseUI(pausedHTTPS.length);renderPendingHTTPS();if(pausedHTTPS.length>lastPendingCount&&!$('interceptBack').classList.contains('open'))openIntercept();lastPendingCount=pausedHTTPS.length}
+function renderPendingHTTPS(){const box=$('pendingList');if(!box)return;if(!pausedHTTPS.length){box.innerHTML='<div class="interceptempty">No HTTPS requests are waiting.</div>';return}box.innerHTML=pausedHTTPS.map(f=>{const hdr=Object.keys(f.request?.headers||{}).length,body=prettyBody(f.request?.body,f.request?.headers);return `<div class="pendingcard"><div class="pendingtop"><span class="method ${methodClass(f.method)}">${esc(f.method||'GET')}</span><div style="min-width:0;flex:1"><div class="host">${esc(f.host||f.serverIp||'HTTPS request')}</div><div class="pendingurl" title="${esc(f.url||'')}">${esc(displayPath(f.url))}</div></div><div class="pendingactions"><button class="btn primary" onclick="decideHTTPS(${f.id},'continue')">Continue</button><button class="btn danger" onclick="decideHTTPS(${f.id},'drop')">Drop</button></div></div><div class="pendingmeta"><span>${esc(f.processName||'unknown')}${f.processId?' · PID '+f.processId:''}</span><span>${new Date(f.startedAt).toLocaleTimeString()}</span><span>${bytes(f.request?.bytes||0)}</span><span>${esc(f.tlsVersion||'TLS')}</span><span>${hdr} headers</span></div><details><summary>Inspect request before continuing</summary><div class="section"><div class="sectiontitle">Headers</div>${headerTable(f.request?.headers)}</div><div class="section"><div class="sectiontitle">Body</div><div class="code pendingbody">${esc(body||'(empty)')}</div></div></details></div>`}).join('')}
+async function decideHTTPS(id,action){try{const r=await apiPost(`/api/intercept/${id}/${action}`);if(!r.ok)throw new Error(await r.text());pausedHTTPS=pausedHTTPS.filter(x=>x.id!==id);lastPendingCount=pausedHTTPS.length;updateHTTPSPauseUI();renderPendingHTTPS();toast(action==='continue'?'HTTPS request continued':'HTTPS request dropped')}catch(e){toast('Request is no longer waiting')}}
+async function continueAllHTTPS(){if(!pausedHTTPS.length)return;try{const r=await apiPost('/api/intercept/continue-all');if(!r.ok)throw new Error(await r.text());pausedHTTPS=[];lastPendingCount=0;updateHTTPSPauseUI();renderPendingHTTPS();toast('All HTTPS requests continued')}catch(e){toast('Could not continue waiting requests')}}
+async function clearFlows(){if(flows.length&&!confirm('Clear all captured requests from memory?'))return;try{await apiPost('/api/clear');flows=[];visible=[];selected=null;selectedFlow=null;renderTable();renderStats();renderEmptyDetail();toast('Capture cleared')}catch{toast('Could not clear capture')}}
+function openSettings(){$('settingsBack').classList.add('open');refreshCert()}
+async function refreshCert(){try{let r=await fetch('/api/cert'),x=await r.json();caInstalled=!!x.installed;$('certDescription').textContent=(caInstalled?'Trusted in the current Windows user Root store. ':'Not currently trusted. ')+x.summary+(x.error?' · '+x.error:'');$('certAction').textContent=caInstalled?'Remove CA':'Install & Trust CA';$('certAction').classList.toggle('danger',caInstalled);$('certAction').classList.toggle('primary',!caInstalled)}catch{$('certDescription').textContent='Could not read certificate status.'}}
+async function toggleCert(){let action=caInstalled?'remove':'install';if(action==='install'&&!confirm('Trust the NetLens local root CA for the current Windows user? This enables local HTTPS inspection.'))return;try{let r=await apiPost('/api/cert/'+action);if(!r.ok)throw new Error(await r.text());await refreshCert();toast(action==='install'?'Certificate installed':'Certificate removed')}catch(e){toast((action==='install'?'Install':'Remove')+' failed: '+String(e.message||e).slice(0,110))}}
+function closeModal(id){$(id).classList.remove('open')}function backdropClose(e,id){if(e.target.id===id)closeModal(id)}
+function toggleTheme(){document.documentElement.classList.toggle('light');localStorage.setItem('netlens.theme',document.documentElement.classList.contains('light')?'light':'dark')}
+if(localStorage.getItem('netlens.theme')==='light')document.documentElement.classList.add('light');
+function openColumns(){$('columnsGrid').innerHTML=columnDefs.map(c=>`<label class="check"><input type="checkbox" ${visibleCols.includes(c.id)?'checked':''} onchange="setColumn('${c.id}',this.checked)">${esc(c.label)}</label>`).join('');$('columnsBack').classList.add('open')}
+function setColumn(id,on){if(on&&!visibleCols.includes(id))visibleCols.push(id);if(!on)visibleCols=visibleCols.filter(x=>x!==id);if(!visibleCols.length)visibleCols=['time'];localStorage.setItem('netlens.columns',JSON.stringify(visibleCols));renderTable()}
+function resetColumns(){visibleCols=defaults.slice();localStorage.setItem('netlens.columns',JSON.stringify(visibleCols));openColumns();renderTable()}
+for(const id of ['q','method','status','scheme','process','host','range','minDuration'])$(id).addEventListener(id==='q'||id==='minDuration'?'input':'change',applyFilters);
+document.addEventListener('keydown',e=>{if(e.key==='/'&&document.activeElement.tagName!=='INPUT'){e.preventDefault();$('q').focus()}if(e.key==='Escape'){if($('interceptBack').classList.contains('open'))closeModal('interceptBack');else if($('settingsBack').classList.contains('open'))closeModal('settingsBack');else if($('columnsBack').classList.contains('open'))closeModal('columnsBack');else{selected=null;selectedFlow=null;renderTable();renderEmptyDetail()}}if((e.key==='ArrowDown'||e.key==='ArrowUp')&&document.activeElement.tagName!=='INPUT'&&visible.length){e.preventDefault();let i=visible.findIndex(f=>f.id===selected);i=e.key==='ArrowDown'?Math.min(visible.length-1,i+1):Math.max(0,(i<0?1:i)-1);selectFlow(visible[i].id)}});
+renderColumns();load();refreshCert();
+</script>
+</body>
+</html>
